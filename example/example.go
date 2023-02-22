@@ -18,7 +18,7 @@ func main() {
 	r.Use(ginprom.Export(metrics))
 
 	r.GET("/ping", func(c *gin.Context) {
-		time.Sleep(2 * time.Second)
+		//time.Sleep(2 * time.Second)
 		c.JSON(200, gin.H{"message": "ok"})
 	})
 
@@ -28,7 +28,7 @@ func main() {
 				// 30 qps
 				time.Sleep(30 * time.Millisecond)
 				w := httptest.NewRecorder()
-				req, _ := http.NewRequest("GET", "/ping", nil)
+				req, _ := http.NewRequest("GET", "/ping?a=c", nil)
 				r.ServeHTTP(w, req)
 			}
 		}()
@@ -41,7 +41,7 @@ func main() {
 
 			/*
 				metric := &dto.Metric{}
-				o, err := metrics.PromDuration.MetricVec.GetMetricWithLabelValues([]string{"200", "/ping", "GET"}...)
+				o, err := metrics.PromReceivedBytes.MetricVec.GetMetricWithLabelValues([]string{"200", "/ping", "GET"}...)
 				if err != nil {
 					panic(err)
 				}
@@ -50,7 +50,8 @@ func main() {
 				fmt.Println(proto.MarshalTextString(metric))
 
 			*/
-			log.Printf("total_request: %d qps: %d \n", metrics.TotalRequest, metrics.QPS)
+
+			log.Printf("total_request: %d qps: %d current_received_bytes: %d current_sent_bytes: %d received_bytes: %d sent_bytes: %d \n", metrics.TotalRequest, metrics.QPS, metrics.CurrentReceivedBytes, metrics.CurrentSentBytes, metrics.ReceivedBytes, metrics.SentBytes)
 		}
 	}()
 
