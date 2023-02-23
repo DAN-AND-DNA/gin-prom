@@ -104,8 +104,8 @@ func NewMetrics(namespace string, registry *prometheus.Registry) *Metrics {
 			if diffRequest < 0 {
 				diffRequest = 0
 			}
-			
-			m.QPS = int64(math.Ceil(0.1))
+
+			m.QPS = int64(math.Ceil(float64(diffRequest) / float64(period)))
 			m.PromQPS.Set(float64(m.QPS))
 
 			// 时间段内的接受字节数
